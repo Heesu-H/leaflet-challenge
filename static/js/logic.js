@@ -59,19 +59,8 @@ d3.json(url, data => {
         );
     })
     
+    //manitude layer
     var magnitudeLayer = L.layerGroup(circleMarkers);
-
-    var overlayMaps = {
-        Earthquakes: magnitudeLayer
-    } 
-
-
-    //creating map
-    var myMap = L.map('map', {
-        center: [0,15],
-        zoom: 3,
-        layers: [light, magnitudeLayer]
-    })
 
     //colours for legend
     function getColor(d) {
@@ -100,9 +89,40 @@ d3.json(url, data => {
         return div;
     }
 
-    legend.addTo(myMap);
+    d3.json('static/tectonicplates-master/GeoJSON/PB2002_boundaries.json', data => {
 
-    //adding layer control panel
-    L.control.layers(baseMaps, overlayMaps).addTo(myMap)
+        var plateMarkers = [];
+    
+        var array = data.features
+        array.forEach(d=> {
+            var arrayCoord = d.geometry.coordinates
+            var newArrayCoord = arrayCoord.map(coord => {return [coord[1],coord[0]]})
+            
+            plateMarkers.push( L.polyline(newArrayCoord, {color: 'orange'}) )
+        //end of forEach
+        })
+        
+        //tectonic plates layer
+        var plateLayer = L.layerGroup(plateMarkers);
 
-})
+        //Creating overlays object
+        var overlayMaps = {
+            Earthquakes: magnitudeLayer,
+            Tectonics: plateLayer
+        } 
+    
+    
+        //creating map
+        var myMap = L.map('map', {
+            center: [0,15],
+            zoom: 3,
+            layers: [light, magnitudeLayer]
+        })
+
+        //adding layer control panel
+        L.control.layers(baseMaps, overlayMaps).addTo(myMap)
+        legend.addTo(myMap);
+    })
+// end of d3.json
+});
+
