@@ -54,7 +54,7 @@ d3.json(url, data => {
                 radius: magnitude*40000
             }).bindPopup(`<h2>Location:<h3>${object.properties.place}</h3></h2><hr>
                 <h2>Magnitude: ${object.properties.mag}</h2>
-                <h2>Date (UNIX): ${object.properties.time.toISOString()}</h2>`)
+                <h2>Date: ${new Date(object.properties.time)}</h2>`)
         );
     })
     
